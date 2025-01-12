@@ -16,7 +16,7 @@ const recipeSchema = new Schema(
       type: String, // A brief description of the recipe
       required: true,
     },
-    steps: {
+    method: {
       type: [String], // Array of steps for preparing the recipe
       required: true,
     },
@@ -53,7 +53,7 @@ const recipeSchema = new Schema(
         date: { type: Date, default: Date.now }, // Review submission date
       },
     ],
-    categories: {
+    category: {
       type: String,
       required: true, // Ensure each recipe has at least one category
     },

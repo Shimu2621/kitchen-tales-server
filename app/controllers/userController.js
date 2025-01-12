@@ -7,7 +7,7 @@ const generateToken = require("../utils/token");
 // Signup route function
 const signup = async (req, res) => {
   try {
-    // const { fullName, email, photo, address, password, confirmPassword } = req.body;
+    // const { fullName, email, userPhoto, address, password, confirmPassword } = req.body;
     const newUser = new User(req.body);
 
     const result = await newUser.save();
@@ -200,10 +200,15 @@ const updateUsersRole = async (req, res) => {
 // Get All Authors
 const allAuthors = async (req, res) => {
   try {
-    const authors = await User.find(
-      { role: "author" },
-      "fullName userPhoto email address role"
-    );
+    const search = req.query.search || "";
+
+    // Initialize filter object
+    const filter = {
+      role: "author",
+      fullName: { $regex: search, $options: "i" },
+    };
+
+    const authors = await User.find(filter).select("fullName userPhoto");
     res
       .status(status.status.OK)
       .send(

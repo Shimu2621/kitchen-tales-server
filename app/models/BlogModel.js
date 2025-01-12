@@ -14,9 +14,13 @@ const blogSchema = new Schema({
   postedDate: { type: Date, default: Date.now },
   comments: [
     {
-      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      commentText: String,
-      submittedDate: { type: Date, default: Date.now },
+      commenterId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      commentText: { type: String, required: true },
+      submissionDate: { type: Date, default: Date.now }, // Comment submission date
     },
   ],
 });

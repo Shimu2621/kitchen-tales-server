@@ -93,8 +93,80 @@ const singleBlogById = async (req, res) => {
   }
 };
 
+// Update blog by id
+const updateBlog = async (req, res) => {
+  const { id } = req.params;
+  const updatedBlog = req.body;
+
+  try {
+    const result = await Blog.findByIdAndUpdate(id, updatedBlog, {
+      new: true,
+    });
+
+    if (!result) {
+      return res
+        .status(status.status.NOT_FOUND)
+        .send(
+          response.createNotFoundResponse(
+            status.status.NOT_FOUND,
+            "Blog not updated"
+          )
+        );
+    }
+    res
+      .status(status.status.OK)
+      .send(
+        response.createSuccessResponse(
+          status.status.OK,
+          "Updated a single blog by id successfully",
+          result
+        )
+      );
+  } catch (error) {
+    res
+      .status(status.status.INTERNAL_SERVER_ERROR)
+      .send(
+        response.createErrorResponse(
+          status.status.INTERNAL_SERVER_ERROR,
+          "Server error occured when updating a single blog",
+          error.message
+        )
+      );
+  }
+};
+
+// Delete  a single blog by id
+const deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Blog.findByIdAndDelete(id);
+
+    if (!result) {
+      return res
+        .status(status.status.NOT_FOUND)
+        .send(
+          response.createNotFoundResponse(
+            status.status.NOT_FOUND,
+            "Blog not deleted successfully"
+          )
+        );
+    }
+    res
+      .status(status.status.OK)
+      .send(
+        response.createSuccessResponse(
+          status.status.OK,
+          "Deleted a single blog by id successfully",
+          result
+        )
+      );
+  } catch (error) {}
+};
+
 module.exports = {
   createBlog,
   getAllBlogs,
   singleBlogById,
+  updateBlog,
+  deleteBlog,
 };
