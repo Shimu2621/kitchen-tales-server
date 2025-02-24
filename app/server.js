@@ -7,6 +7,7 @@ const recipeRouter = require("./router/recipeRouter");
 const blogRouter = require("./router/blogRouter");
 const becomeAnAuthorRouter = require("./router/becomeAnAuthorRouter");
 const favoriteItemRouter = require("./router/favoriteItemRouter");
+const teamMemberRouter = require("./router/teamMemberRouter");
 
 const port = 5000;
 
@@ -26,6 +27,7 @@ app.use("/api", recipeRouter);
 app.use("/api", blogRouter);
 app.use("/api", becomeAnAuthorRouter);
 app.use("/api", favoriteItemRouter);
+app.use("/api", teamMemberRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

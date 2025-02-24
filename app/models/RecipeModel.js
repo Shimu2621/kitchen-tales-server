@@ -36,6 +36,7 @@ const recipeSchema = new Schema(
       ref: "User",
     },
     rating: { type: Number, default: 0 }, // Add rating field
+    postedDate: { type: Date, default: Date.now },
     reviews: [
       {
         reviewer_id: {

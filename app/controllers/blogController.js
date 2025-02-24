@@ -31,8 +31,27 @@ const createBlog = async (req, res) => {
 
 // Retrieving All Blogs
 const getAllBlogs = async (req, res) => {
+  const { category, search } = req.query; // Use `req.query` for query parameters
+  console.log(category);
+
+  const filter = {}; // Initialize filter object
+  console.log("Filter object:", filter);
+
+  // Filter by search (title, case-insensitive)
+  if (search) {
+    filter.title = { $regex: search, $options: "i" };
+  }
+
+  // Filter by category
+  if (category) {
+    filter.category = category;
+  }
+
   try {
-    const blogs = await Blog.find();
+    const blogs = await Blog.find(filter)
+      .populate("author_id", "fullName userPhoto") // Populate author details
+      .populate("comments.commenterId", "fullName userPhoto") // Populate commenter details
+      .sort({ postedDate: -1 }); // Sort by latest posted date
     res
       .status(status.status.OK)
       .send(
@@ -59,7 +78,7 @@ const getAllBlogs = async (req, res) => {
 const singleBlogById = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await Blog.findById(id);
+    const result = await Blog.findById(id).populate("author_id");
 
     if (!result) {
       return res
@@ -93,6 +112,48 @@ const singleBlogById = async (req, res) => {
   }
 };
 
+// Get all blogs by author ID
+const getBlogsByAuthorId = async (req, res) => {
+  try {
+    const { authorId } = req.params;
+
+    const blogs = await Blog.find({ author_id: authorId }).populate(
+      "author_id",
+      "fullName userPhoto"
+    );
+
+    if (!blogs.length) {
+      return res
+        .status(status.status.NOT_FOUND)
+        .send(
+          response.createNotFoundResponse(
+            status.status.NOT_FOUND,
+            "No blogs found for this author"
+          )
+        );
+    }
+
+    res
+      .status(status.status.OK)
+      .send(
+        response.createSuccessResponse(
+          status.status.OK,
+          "Retrieve all blogs by this author successfully",
+          blogs
+        )
+      );
+  } catch (error) {
+    res
+      .status(status.status.INTERNAL_SERVER_ERROR)
+      .send(
+        response.createErrorResponse(
+          status.status.INTERNAL_SERVER_ERROR,
+          "Server error occured when retrieving all blog by author id",
+          error.message
+        )
+      );
+  }
+};
 // Update blog by id
 const updateBlog = async (req, res) => {
   const { id } = req.params;
@@ -163,10 +224,55 @@ const deleteBlog = async (req, res) => {
   } catch (error) {}
 };
 
+const addComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const blog = await Blog.findById(id);
+
+    if (!blog) {
+      return res
+        .status(status.status.NOT_FOUND)
+        .send(
+          response.createNotFoundResponse(
+            status.status.NOT_FOUND,
+            "Blog not found"
+          )
+        );
+    }
+
+    const comment = req.body;
+    blog.comments.push(comment);
+
+    const updatedBlog = await blog.save(); // Save the updated recipe
+
+    res
+      .status(status.status.OK)
+      .send(
+        response.createSuccessResponse(
+          status.status.OK,
+          "New comment added successfully",
+          updatedBlog
+        )
+      );
+  } catch (error) {
+    res
+      .status(status.status.INTERNAL_SERVER_ERROR)
+      .send(
+        response.createErrorResponse(
+          status.status.INTERNAL_SERVER_ERROR,
+          "Server error occurred when adding a new comment",
+          error.message
+        )
+      );
+  }
+};
+
 module.exports = {
   createBlog,
   getAllBlogs,
   singleBlogById,
+  getBlogsByAuthorId,
   updateBlog,
   deleteBlog,
+  addComment,
 };
