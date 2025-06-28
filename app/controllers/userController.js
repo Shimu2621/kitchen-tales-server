@@ -62,9 +62,10 @@ const signin = async (req, res) => {
     }
 
     const token = generateToken(user);
+    console.log("Generated Token:", token); // Check if a valid token is printed
 
     res.cookie("accessToken", token, {
-      httpOnly: true,
+      httpOnly: false,
       secure: true,
       maxAge: 60 * 60 * 1000,
     });
@@ -75,7 +76,7 @@ const signin = async (req, res) => {
       response.createSuccessResponse(
         status.status.OK,
         "User logged in successfully",
-        user,
+        { user, token }, // Include token in the response
         isAdmin
       ) //include isAdmin in response
     );
