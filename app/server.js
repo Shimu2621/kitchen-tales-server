@@ -9,12 +9,15 @@ const becomeAnAuthorRouter = require("./router/becomeAnAuthorRouter");
 const favoriteItemRouter = require("./router/favoriteItemRouter");
 const teamMemberRouter = require("./router/teamMemberRouter");
 
-const port = 5000;
+const port = process.env.PORT || 5001;
 
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? true // Add your actual frontend URL
+        : "http://localhost:5173",
     credentials: true,
   })
 );
@@ -33,6 +36,12 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+// Only start server locally, not on Vercel
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+  });
+}
+
+// Export for Vercel
+module.exports = app;
