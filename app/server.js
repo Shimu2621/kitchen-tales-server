@@ -1,9 +1,9 @@
-// Trigger vercel deployment
-
 const express = require("express");
 const cors = require("cors");
 const connectionToDB = require("./db/connectionDb");
+const serverless = require("serverless-http"); // 👈 Add this
 const app = express();
+
 const userRouter = require("./router/userRouter");
 const recipeRouter = require("./router/recipeRouter");
 const blogRouter = require("./router/blogRouter");
@@ -16,17 +16,16 @@ const port = process.env.PORT || 5001;
 // Middleware
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? true // Add your actual frontend URL
-        : "http://localhost:5173",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
 app.use(express.json());
 
+// Connect to DB
 connectionToDB();
 
+// Routes
 app.use("/api", userRouter);
 app.use("/api", recipeRouter);
 app.use("/api", blogRouter);
@@ -34,16 +33,18 @@ app.use("/api", becomeAnAuthorRouter);
 app.use("/api", favoriteItemRouter);
 app.use("/api", teamMemberRouter);
 
+// Health check route
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-// Only start server locally, not on Vercel
+// Only run locally
 if (process.env.NODE_ENV !== "production") {
   app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+    console.log(`Server is running on port ${port}`);
   });
 }
 
-// Export for Vercel
+// 👇 Export for Vercel Serverless
 module.exports = app;
+module.exports.handler = serverless(app); // 👈 Add this line
