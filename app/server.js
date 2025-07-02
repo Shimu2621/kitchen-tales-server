@@ -11,7 +11,7 @@ const becomeAnAuthorRouter = require("./router/becomeAnAuthorRouter");
 const favoriteItemRouter = require("./router/favoriteItemRouter");
 const teamMemberRouter = require("./router/teamMemberRouter");
 
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(
