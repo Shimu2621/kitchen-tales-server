@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
 const connectionToDB = require("./db/connectionDb");
 const serverless = require("serverless-http"); // 👈 Add this
 const app = express();
@@ -45,6 +46,4 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// 👇 Export for Vercel Serverless
-module.exports = app;
-module.exports.handler = serverless(app); // 👈 Add this line
+module.exports = serverless(app); // ✅ This is the correct single export for Vercel
