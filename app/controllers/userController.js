@@ -37,7 +37,17 @@ const signup = async (req, res) => {
 const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("Request Body:", req.body);
+
     const user = await User.findOne({ email });
+    console.log("User Object:", user);
+
+    if (user) {
+      console.log("User Name:", user.fullName);
+      console.log("Email:", user.email);
+      console.log("Role:", user.role);
+    }
+
     if (!user) {
       return res
         .status(status.status.NOT_FOUND)
