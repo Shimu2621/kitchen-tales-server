@@ -35,15 +35,20 @@ app.use("/api", favoriteItemRouter);
 app.use("/api", teamMemberRouter);
 
 // Health check route
+// app.get("/", (req, res) => {
+//   res.send("Hello World!");
+// });
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.status(200).json({ message: "Server is running ✅" });
 });
 
-// Only run locally
+// Only run the server locally
 if (process.env.NODE_ENV !== "production") {
+  const port = process.env.PORT || 5000;
   app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server running on port ${port}`);
   });
 }
 
-module.exports = serverless(app); // ✅ This is the correct single export for Vercel
+// ✅ Only this line should be exported for Vercel
+module.exports = serverless(app);
