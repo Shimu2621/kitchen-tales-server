@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const connectionToDB = require("./db/connectionDb");
-const serverless = require("serverless-http"); // 👈 Add this
+
 const app = express();
 
 const userRouter = require("./router/userRouter");
@@ -18,7 +18,7 @@ const port = process.env.PORT || 5000;
 app.use(
   cors({
     origin: [
-      "https://kitchen-tales-client.vercel.app/",
+      "https://kitchen-tales-client.vercel.app",
       "http://localhost:5173",
     ],
     credentials: true,
@@ -49,7 +49,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-// ✅ Only this line should be exported for Vercel
-module.exports = serverless(app);
-module.exports = app;
