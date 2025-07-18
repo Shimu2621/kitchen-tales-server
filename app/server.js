@@ -46,10 +46,10 @@ app.get("/", (req, res) => {
 // });
 
 // Only run the server locally
-// app.listen(port, () => {
-//   console.log(`Server running on port ${port}`);
-// });
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
 
 // ✅ Only this line should be exported for Vercel
-// module.exports = serverless(app);
+module.exports = serverless(app);
 module.exports = app;
