@@ -2,7 +2,7 @@
 
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 const userSchema = new Schema(
